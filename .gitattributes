@@ -1,0 +1,7 @@
+# Wrapper保留各平台需要的换行格式。
+* text=auto
+*.java text eol=lf
+*.yml text eol=lf
+*.xml text eol=lf
+mvnw text eol=lf
+mvnw.cmd text eol=crlf

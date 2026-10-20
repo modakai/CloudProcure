@@ -1,0 +1,16 @@
+# 构建产物与本机配置不进入版本控制。
+**/target/
+.idea/
+*.iml
+.vscode/
+.env
+.env.*
+!.env.example
+**/application-private.yml
+*.log
+logs/
+*.jks
+*.p12
+*.key
+.local/
+**/test/

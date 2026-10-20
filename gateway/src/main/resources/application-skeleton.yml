@@ -1,0 +1,14 @@
+# 只验证装配和安全兜底，不连接MySQL/Nacos，不宣称依赖已就绪。
+spring:
+  cloud:
+    discovery:
+      enabled: false
+    nacos:
+      discovery:
+        enabled: false
+      config:
+        enabled: false
+        import-check:
+          enabled: false
+    sentinel:
+      enabled: false

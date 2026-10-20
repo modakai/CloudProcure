@@ -1,0 +1,18 @@
+# 实际依赖必须显式提供；缺配置就失败，禁止回退到内存数据库或默认密码。
+spring:
+  config:
+    import: nacos:${spring.application.name}.yaml
+  cloud:
+    nacos:
+      config:
+        server-addr: ${NACOS_SERVER_ADDR}
+        namespace: ${NACOS_NAMESPACE}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR}
+        namespace: ${NACOS_NAMESPACE}
+        username: ${NACOS_USERNAME}
+        password: ${NACOS_PASSWORD}
+    sentinel:
+      enabled: false
