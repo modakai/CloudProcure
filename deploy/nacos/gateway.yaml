@@ -1,0 +1,3 @@
+# 满足当前骨架的必需配置导入；连接凭据仍由本机配置或环境变量提供。
+cloudprocure:
+  environment: local
