@@ -3,7 +3,7 @@ spring:
   application:
     name: payment-service
   profiles:
-    default: skeleton
+    default: local
   autoconfigure:
     exclude:
       - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
