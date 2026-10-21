@@ -7,6 +7,8 @@
 .env.*
 !.env.example
 **/application-private.yml
+# 本机配置由各模块的application-dev.yml复制，不提交个人地址或凭据。
+**/application-local.yml
 *.log
 logs/
 *.jks
