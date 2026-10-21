@@ -7,7 +7,7 @@
 .env.*
 !.env.example
 **/application-private.yml
-# 本机配置由各模块的application-dev.yml复制，不提交个人地址或凭据。
+# 本机配置由各模块的application-local-example.yml复制，不提交个人地址或凭据。
 **/application-local.yml
 *.log
 logs/
@@ -15,4 +15,5 @@ logs/
 *.p12
 *.key
 .local/
+# 维护者要求测试源码仅保留本地；公开仓库的verify不会自动复现私有测试。
 **/test/

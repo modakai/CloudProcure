@@ -1,7 +1,5 @@
-# Wrapper保留各平台需要的换行格式。
+# 统一源码文本换行；项目使用本机Maven，不维护Wrapper脚本。
 * text=auto
 *.java text eol=lf
 *.yml text eol=lf
 *.xml text eol=lf
-mvnw text eol=lf
-mvnw.cmd text eol=crlf
