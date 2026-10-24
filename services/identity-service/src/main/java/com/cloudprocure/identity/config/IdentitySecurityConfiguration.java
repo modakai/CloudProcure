@@ -3,6 +3,7 @@ package com.cloudprocure.identity.config;
 import com.cloudprocure.common.webmvc.ProblemSecurityHandlers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AnyRequestMatcher;
 
 /**
@@ -37,12 +39,18 @@ public class IdentitySecurityConfiguration {
     }
 
     @Bean
+    @Order(2) // 协议安全链没有匹配的请求，再由现有登录安全链处理。
     SecurityFilterChain SecurityFilterChain(
         HttpSecurity http,
         AuthenticationManager authenticationManager,
         ProblemSecurityHandlers problems
     ) {
+        HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+        // 普通接口不覆盖协议链保存的授权请求，但登录成功仍可读取同一会话中的回跳地址。
+        requestCache.setRequestMatcher(request -> false);
+
         http
+            .requestCache(cache -> cache.requestCache(requestCache))
             .authenticationManager(authenticationManager)
             // 请求认证拦截配置
             .authorizeHttpRequests(authorize -> authorize
