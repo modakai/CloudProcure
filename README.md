@@ -35,6 +35,7 @@
 | [12 架构决策与风险登记](docs/12-架构决策与风险登记.md) | ADR、风险、未决项、变更流程、完整性边界 |
 | [13 自建OIDC认证服务设计](docs/13-自建OIDC认证服务设计.md) | 单门户认证流程、账号、协议持久化、Token、退出与验收 |
 | [14 骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md) | Maven构建、端口、离线骨架与实际基础设施模式 |
+| [16 Lombok与MapStruct](docs/16-Lombok与MapStruct.md) | 按需引用的映射公共模块、注解处理与生成代码边界 |
 | [M0骨架验证记录](docs/evidence/M0-skeleton.md) | 已执行构建、HTTP测试、JAR与Compose检查的结果和边界 |
 | [业务术语表](GLOSSARY.md) | 避免把采购申请、订单、支付意图和履约混为一谈 |
 | [一致性决策详解](docs/adr/0001-explicit-compensation.md) | 为什么主流程选择显式补偿，而非全链路分布式事务 |

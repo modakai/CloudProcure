@@ -8,7 +8,7 @@
 - `common/common-webmvc`：七个MVC应用依赖此库，通过Boot自动配置装配Advice和关联过滤器，不扩大应用包扫描范围。安全配置显式使用`ProblemSecurityHandlers`，资源服务器使用其Bearer版本。
 - Gateway只依赖`common-http`，`ProblemWebHandler`在WebFlux过滤链处理本地异常；下游已经返回的HTTP错误正文直接透传。响应已提交时不尝试重写。
 
-新增依赖后，单模块执行`spring-boot:run`前先在根目录执行`mvn -B -ntp -pl common/common-webmvc -am install -DskipTests`。根目录`mvn -B -ntp verify`会按依赖顺序构建全部模块，独立可执行JAR已包含公共库。
+新增依赖后，单模块执行`spring-boot:run`前先在根目录执行`mvn -B -ntp -pl common/common-webmvc,common/common-mapping -am install -DskipTests`。根目录`mvn -B -ntp verify`会按依赖顺序构建全部模块，独立可执行JAR已包含公共库。
 
 ## 返回与请求
 
