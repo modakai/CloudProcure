@@ -18,6 +18,12 @@
             <artifactId>common-webmvc</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- 映射能力按需接入，不通过common-webmvc扩散给所有服务。 -->
+        <dependency>
+            <groupId>com.cloudprocure</groupId>
+            <artifactId>common-mapping</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>

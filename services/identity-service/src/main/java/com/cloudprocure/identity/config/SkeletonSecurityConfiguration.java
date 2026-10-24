@@ -3,11 +3,13 @@ package com.cloudprocure.identity.config;
 import com.cloudprocure.common.webmvc.ProblemSecurityHandlers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 /** 认证服务尚未实现协议配置，依赖就位不等于可签发Token。 */
 @Configuration(proxyBeanMethods = false)
+@Profile("skeleton")
 public class SkeletonSecurityConfiguration {
 
     /** 默认拒绝业务访问，保留CSRF防护，不生成示例登录用户。 */
