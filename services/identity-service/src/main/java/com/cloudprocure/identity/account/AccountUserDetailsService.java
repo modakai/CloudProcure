@@ -2,13 +2,10 @@ package com.cloudprocure.identity.account;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Collections;
 
 /**
  *
@@ -31,11 +28,10 @@ public class AccountUserDetailsService implements UserDetailsService {
             .orElseThrow(() ->
                 new UsernameNotFoundException("账号或密码错误"));
 
-        return User.withUsername(account.getSubjectId())
-            .password(account.getPasswordHash())
-            // 登录身份不自动拥有企业成员角色或管理员权限。
-            .authorities(Collections.emptyList())
-            .disabled(!AccountStatus.ACTIVE.equals(account.getStatus()))
-            .build();
+        return new AccountUserDetails(
+            account.getSubjectId(),
+            account.getPasswordHash(),
+            AccountStatus.ACTIVE.equals(account.getStatus()),
+            account.getCredentialVersion());
     }
 }

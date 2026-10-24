@@ -3,12 +3,15 @@ package com.cloudprocure.identity.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 /** 协议客户端使用框架JDBC仓储，避免重写官方持久化模型。 */
 @Configuration(proxyBeanMethods = false)
@@ -32,8 +35,21 @@ public class AuthorizationPersistenceConfiguration {
     OAuth2AuthorizationService authorizationService(
         JdbcOperations jdbcOperations,
         RegisteredClientRepository clients) {
-        return new JdbcOAuth2AuthorizationService(
-            jdbcOperations, clients);
+        // 仅为凭据版本补充Long类型，保留框架模块及其余反序列化限制。
+        var typeValidator = BasicPolymorphicTypeValidator.builder()
+            .allowIfSubType(Long.class);
+        JsonMapper mapper = JsonMapper.builder()
+            .addModules(SecurityJacksonModules.getModules(
+                AuthorizationPersistenceConfiguration.class.getClassLoader(), typeValidator))
+            .build();
+
+        var service = new JdbcOAuth2AuthorizationService(jdbcOperations, clients);
+        // 授权读写必须使用同一套类型配置，且不影响MVC的全局JSON映射。
+        service.setAuthorizationRowMapper(
+            new JdbcOAuth2AuthorizationService.JsonMapperOAuth2AuthorizationRowMapper(clients, mapper));
+        service.setAuthorizationParametersMapper(
+            new JdbcOAuth2AuthorizationService.JsonMapperOAuth2AuthorizationParametersMapper(mapper));
+        return service;
     }
 
     /**

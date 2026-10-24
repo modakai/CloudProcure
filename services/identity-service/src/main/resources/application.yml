@@ -14,6 +14,8 @@ spring:
       ddl-auto: validate
 
 server:
+  # 当前直连认证服务，不让未受信任的转发头改写限速使用的来源地址。
+  forward-headers-strategy: none
   address: ${SERVER_ADDRESS:127.0.0.1}
   port: ${SERVER_PORT:9000}
   shutdown: graceful
