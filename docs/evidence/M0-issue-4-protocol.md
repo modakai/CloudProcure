@@ -67,6 +67,8 @@ mvn -B -ntp -pl services/identity-service -am `
     test
 ```
 
+测试类会先探测 `127.0.0.1:9000`：服务未启动时整类显式跳过并给出原因，不会再以连接失败的形式阻断全量 `mvn verify`；服务在线时仍执行完整的真实 HTTP 协议断言。跳过不等于通过，执行协议验收前必须确认服务与实验输入均已就绪。
+
 本机结果文件：
 
 - `services/identity-service/target/surefire-reports/TEST-com.cloudprocure.identity.client.OidcProtocolHttpTest.xml`
@@ -80,7 +82,7 @@ mvn -B -ntp -pl services/identity-service -am `
 - 本轮未验收登录限速；后续已补充单实例账号与来源限速及隔离安全链测试，见[登录限速证据](M0-issue-4-login-rate-limit.md)。尚非真实 HTTP + MySQL、代理或多实例验收。
 - 当前初始化代码密码下限为 8 字符，与 Issue #4 的最少 12 字符仍不一致；弱口令拒绝也未完整验收。
 - 本轮未做 BCrypt 成本参数的硬件基准测试；后续已独立补测，见 [BCrypt 成本实测](M0-issue-4-bcrypt.md)。生产参数仍需结合目标硬件与并发预算定型。
-- 本轮未重跑 skeleton 模式隔离、重启恢复、密钥缺失或轮换测试，不将此前用户反馈视为本轮独立执行证据。
+- `skeleton`模式已从仓库移除，本轮不再涉及该模式隔离；本轮未重跑重启恢复、密钥缺失或轮换测试，不将此前用户反馈视为本轮独立执行证据。
 - 本轮没有重新执行 access-service 的实际资源服务器用例；用途分离测试属于上一阶段结果。
 - 本轮不覆盖实时撤权、刷新并发、完整退出、MFA、备份恢复或 OIDC 标准认证。
 

@@ -13,7 +13,7 @@ docker compose --env-file deploy/.env -f deploy/compose.yml up -d
 docker compose --env-file deploy/.env -f deploy/compose.yml ps
 ```
 
-密码使用高熵随机值；Nacos Token Secret为至少32随机字节的Base64编码，身份键与身份值独立设置。`.env`只供Compose替换，不会自动注入IDE或宿主机Java进程。应用所需变量按[骨架指南](../docs/14-骨架搭建与启动指南.md)配置。
+密码使用高熵随机值；Nacos Token Secret为至少32随机字节的Base64编码，身份键与身份值独立设置。`.env`只供Compose替换，不会自动注入IDE或宿主机Java进程。应用所需变量按[搭建与启动指南](../docs/14-骨架搭建与启动指南.md)配置。
 
 Nacos控制台使用本机18080端口，SDK访问8848和9848。按当前版本的控制台初始化管理员，创建独立开发命名空间、客户端账号与权限，不使用公开默认密码。
 

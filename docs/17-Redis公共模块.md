@@ -126,9 +126,9 @@ cp:catalog-service:cache:product-detail::12345
 
 需要“缓存不可用就回源”的服务应自行配置 `CacheErrorHandler`，并逐缓存确认降级是否安全；金额、库存、权限等写入或强一致判断不应静默回源后继续。
 
-## 8. 离线启动与测试
+## 8. 启动与测试
 
-加入 `spring-boot-starter-data-redis` 后，Boot 会注册 Redis 健康检查。没有 Redis 的 `skeleton`/测试环境调用 `/actuator/health` 会得到 DOWN；应在这些 profile 设置 `management.health.redis.enabled=false`，而不是排除 `DataRedisAutoConfiguration`（排除后本模块的模板缺少连接工厂，应用无法启动）。连接本身是延迟建立的，单纯启动不会主动连 Redis。
+加入 `spring-boot-starter-data-redis` 后，Boot 会注册 Redis 健康检查。没有 Redis 的测试环境或未启用 Redis 的运行环境调用 `/actuator/health` 会得到 DOWN；应在这些环境设置 `management.health.redis.enabled=false`，而不是排除 `DataRedisAutoConfiguration`（排除后本模块的模板缺少连接工厂，应用无法启动）。连接本身是延迟建立的，单纯启动不会主动连 Redis。
 
 测试源码按维护者约定只保留在被忽略的 `src/test/`。本地验证包括：
 

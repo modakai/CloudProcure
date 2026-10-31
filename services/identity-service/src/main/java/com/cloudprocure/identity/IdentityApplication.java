@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class IdentityApplication {
 
-    /** 由运行配置决定使用无中间件骨架模式还是实际基础设施。 */
+    /** 由运行配置决定实际 Nacos/MySQL/签名密钥等基础设施。 */
     public static void main(String[] args) {
         SpringApplication.run(IdentityApplication.class, args);
     }

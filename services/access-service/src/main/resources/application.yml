@@ -1,4 +1,4 @@
-# 默认骨架模式可离线启动；不创建假账号、临时签名密钥或业务数据。
+# 默认 local 模式；需要本机 Nacos/MySQL 等真实依赖，缺配置时启动失败。
 spring:
   application:
     name: access-service

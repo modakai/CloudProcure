@@ -6,7 +6,7 @@
 
 **当前已交付产品工程设计和可编译运行的八应用骨架，尚未实现采购业务与OIDC认证闭环。文中的容量、SLO、进度仍为设计目标或估算，不能当成实测结果或生产承诺。**
 
-快速开始：使用本机Maven3.9.9与JDK21，在根目录运行`mvn -B -ntp verify`，单独启动前先运行`mvn -B -ntp -pl common/common-bom,common/common-webmvc -am install -DskipTests`安装公共库与BOM，再运行`mvn -pl gateway "-Dspring-boot.run.profiles=skeleton" spring-boot:run`；显式`skeleton`模式无需中间件，仅开放`http://127.0.0.1:8080/actuator/health`。不使用Maven Wrapper；当前默认`local`需要个人配置和真实依赖。测试源码按维护者要求仅保留本地，干净克隆的`verify`不代表已执行测试。完整命令见[骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md)，验证结果与依赖证据见[#2验证报告](docs/evidence/M0-issue-2/README.md)。
+快速开始：使用本机Maven3.9.9与JDK21，在根目录运行`mvn -B -ntp verify`，单独启动前先运行`mvn -B -ntp -pl common/common-bom,common/common-webmvc -am install -DskipTests`安装公共库与BOM。应用只支持`local`模式，启动前必须按[启动指南](docs/14-骨架搭建与启动指南.md)准备Nacos、MySQL、签名密钥与OIDC等真实依赖；原离线`skeleton`模式已移除，缺依赖时启动失败。不使用Maven Wrapper。测试源码按维护者要求仅保留本地，干净克隆的`verify`不代表已执行测试。验证结果与依赖证据见[#2验证报告](docs/evidence/M0-issue-2/README.md)。
 
 ## 先读这六条结论
 
@@ -34,10 +34,10 @@
 | [11 实施计划与任务拆解](docs/11-实施计划与任务拆解.md) | 个人可完成的阶段计划、依赖和交付物 |
 | [12 架构决策与风险登记](docs/12-架构决策与风险登记.md) | ADR、风险、未决项、变更流程、完整性边界 |
 | [13 自建OIDC认证服务设计](docs/13-自建OIDC认证服务设计.md) | 单门户认证流程、账号、协议持久化、Token、退出与验收 |
-| [14 骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md) | Maven构建、端口、离线骨架与实际基础设施模式 |
+| [14 骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md) | Maven构建、端口与 local 真实依赖启动；skeleton 模式已移除 |
 | [16 Lombok与MapStruct](docs/16-Lombok与MapStruct.md) | 按需引用的映射公共模块、注解处理与生成代码边界 |
 | [17 Redis公共模块](docs/17-Redis公共模块.md) | JSON序列化、缓存键前缀、TTL与不缓存null的接入约定 |
-| [M0骨架验证记录](docs/evidence/M0-skeleton.md) | 已执行构建、HTTP测试、JAR与Compose检查的结果和边界 |
+| [M0骨架验证记录（已废止）](docs/evidence/M0-skeleton.md) | skeleton 模式的历史构建、HTTP测试、JAR与Compose检查；该模式已从仓库移除 |
 | [业务术语表](GLOSSARY.md) | 避免把采购申请、订单、支付意图和履约混为一谈 |
 | [一致性决策详解](docs/adr/0001-explicit-compensation.md) | 为什么主流程选择显式补偿，而非全链路分布式事务 |
 | [认证与持久化决策](docs/adr/0002-owned-oidc-and-jpa.md) | 自建OIDC与JPA的学习目标、范围和代价 |

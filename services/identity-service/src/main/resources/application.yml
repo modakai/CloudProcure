@@ -1,11 +1,9 @@
-# 说明：profile=skeleton 时可在无 MySQL/Nacos 的情况下离线启动；
-# 该 profile 不创建假账号、临时签名密钥或业务数据。
+# 默认 local 模式需要本机 Nacos/MySQL 与签名密钥；缺配置时启动失败，不再提供离线降级模式。
 spring:
   application:
     name: identity-service
   profiles:
-    # 没有显式指定 profile 时默认激活 local（连接本机 Nacos/MySQL，见 application-local.yml）。
-    # skeleton profile 需要显式 --spring.profiles.active=skeleton 才会启用。
+    # 没有显式指定 profile 时激活 local（连接本机 Nacos/MySQL，见 application-local.yml）。
     default: local
   autoconfigure:
     exclude:

@@ -1,5 +1,7 @@
 # 分组父工程与公共库BOM验证
 
+> 历史说明：本文记录 Issue #13 当时的验证状态。文中 identity 私有测试失败与 `skeleton` 模式均已在此后处理：identity 测试已修复，`skeleton` 模式已从仓库移除；当前全量结果见[common-redis 验证记录](common-redis.md)。
+
 日期：2026-10-31（Asia/Shanghai）。对应任务：[GitHub Issue #13](https://github.com/modakai/CloudProcure/issues/13)。分支`refactor/unified-parent-bom`，决策见[ADR-0003](../adr/0003-unified-parent-and-common-bom.md)。
 
 环境：Windows、BellSoft JDK 21.0.10、Maven 3.9.9；依赖版本沿用根POM的Boot 4.0.8、Cloud 2025.1.3、SCA 2025.1.0.0，未升级任何第三方版本。
@@ -22,7 +24,7 @@
 
 - `SigningKeyConfigurationTest`：需要`IDENTITY_SIGNING_KEYSTORE`与`IDENTITY_SIGNING_KEYSTORE_PASSWORD`，缺失时测试自身抛出“请在测试运行配置中设置密钥文件路径”。
 - `IdTokenValidationTest`：需要先运行协议实验脚本并取得输入，缺失时抛出“请先在同一终端运行协议实验脚本”。
-- `ClientSecretDiagnosticTest`、`OidcProtocolHttpTest`、`IdentityApplicationTests`、`SkeletonHttpTest`：需要运行中的identity及其local数据库、Nacos、签名密钥配置；前两项直接表现为连接失败。
+- `ClientSecretDiagnosticTest`、`OidcProtocolHttpTest`、`IdentityApplicationTests`：需要运行中的identity及其local数据库、Nacos、签名密钥配置；前两项直接表现为连接失败。
 - access的`RealIdentityTokenHttpTest`：使用`resource-server-test`配置，需要真实JWK Set端点；缺失时上下文在`jwtDecoderByJwkKeySetUri`条件处失败。
 - 这些前置条件在[协议测试记录](M0-issue-4-protocol.md)中已写明为手工运行要求。失败与本次父工程/BOM调整没有因果关系，但默认`mvn -B -ntp verify`在本机不是可全绿的门禁，不能用`-DskipTests`的通过替代测试结论。
 
