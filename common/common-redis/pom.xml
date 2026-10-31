@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <!-- Redis公共模块当前只是占位实现；先纳入聚合构建随根工程编译，不对外承诺缓存能力。 -->
+    <!-- Redis公共模块：统一序列化、键前缀和缓存过期策略，应用只声明依赖与@EnableCaching。 -->
     <parent>
         <groupId>com.cloudprocure</groupId>
         <artifactId>common</artifactId>
@@ -10,11 +10,26 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>common-redis</artifactId>
-    <description>Redis模块</description>
+    <description>Redis公共模块</description>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- 引入缓存自动配置模块，才能注册RedisCacheManagerBuilderCustomizer并让Boot创建CacheManager。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- Spring Data Redis的Jackson 3序列化器是optional依赖，这里显式提供给消费者。 -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

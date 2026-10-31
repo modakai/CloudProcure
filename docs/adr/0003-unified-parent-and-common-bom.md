@@ -14,4 +14,4 @@
 
 - 从根目录构建（含`-pl`子集）可在reactor内解析BOM；直接构建单个服务POM前必须先`install` `common-bom`，否则报`Non-resolvable import POM`。这与原先“单模块运行前先安装公共库”的前置条件性质相同，只是多一个构件。
 - `common-webmvc`依赖`common-http`仍保留`${project.version}`：`common`父工程不能导入自己的子BOM，否则成环。
-- `common-redis`只有占位实现，参与聚合构建但不进BOM，避免把未实现能力写进依赖契约。
+- `common-redis`已提供缓存自动配置并进入BOM；其传递依赖包含 Spring Data Redis/Cache 与 Jackson 3，服务按需声明，不因导入BOM而自动建立运行时连接。契约见[Redis缓存序列化与过期契约](0004-redis-cache-contract.md)。

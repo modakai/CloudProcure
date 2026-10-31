@@ -31,7 +31,12 @@
                 <artifactId>common-webmvc</artifactId>
                 <version>${project.version}</version>
             </dependency>
-            <!-- common-redis仍是空实现，暂不进BOM，避免把未实现能力写进依赖契约。 -->
+            <!-- 需要Redis缓存或JSON模板的服务通过本BOM取得版本，不手写公共库版本。 -->
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
