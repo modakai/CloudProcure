@@ -1,17 +1,16 @@
 # Lombok与MapStruct公共模块
 
-`common/common-mapping`是按需引用的普通JAR，聚合Lombok与MapStruct依赖并提供`CommonMapperConfig`，不依赖业务实体、Web或JPA。目前仅access-service显式接入，其他服务和公共库不自动引用。
+`common/common-mapping`是按需引用的普通JAR，聚合Lombok与MapStruct依赖并提供`CommonMapperConfig`，不依赖业务实体、Web或JPA。目前仅access-service与identity-service显式接入，其他服务和公共库不自动引用。
 
 ## 服务接入
 
 在需要两种工具的服务POM中添加依赖：
 
 ```xml
-<!-- 映射能力按需引用，不通过Web公共库扩散。 -->
+<!-- 映射能力按需引用，不通过Web公共库扩散；版本由services父工程导入的common-bom提供。 -->
 <dependency>
     <groupId>com.cloudprocure</groupId>
     <artifactId>common-mapping</artifactId>
-    <version>${project.version}</version>
 </dependency>
 ```
 
@@ -28,7 +27,7 @@ Maven的JAR依赖不会继承依赖模块的build/plugins，因此注解处理�
 
 IDE重新加载根Maven项目，并启用注解处理。构建使用JDK21；调整依赖后首次建议`mvn -B -ntp clean verify`，避免复用旧的重打包JAR。主源码的生成目录为各模块`target/generated-sources/annotations`，测试为`target/generated-test-sources/test-annotations`，不要手写或提交生成文件。
 
-单模块执行spring-boot:run前，在根目录执行`mvn -B -ntp -pl common/common-webmvc,common/common-mapping -am install -DskipTests`，安装公共库与父POM。
+单模块执行spring-boot:run前，在根目录执行`mvn -B -ntp -pl common/common-bom,common/common-webmvc,common/common-mapping -am install -DskipTests`，安装BOM、公共库与父POM。
 
 后续增加其他注解处理器时，需要追加到父POM的annotationProcessorPaths，不能只添加普通dependency。
 
@@ -54,7 +53,7 @@ access-service的本地`LombokMapStructTest`通过common-mapping的传递依赖�
 
 2026-10-24执行`mvn -B -ntp "-Dmaven.jar.forceCreation=true" verify`通过，27项本地测试失败/错误/跳过均为0。强制重新创建JAR避免依赖调整后复用旧的重打包产物；也可以使用clean verify。
 
-检查全部八个应用JAR：仅access-service包含common-mapping与MapStruct API，其余七个不包含；全部排除Lombok、processor和binding。公共库已按上述命令安装到本机Maven仓库。未验证IDE插件或新增业务映射。任务见[Issue #11](https://github.com/modakai/CloudProcure/issues/11)。
+检查全部八个应用JAR：仅access-service包含common-mapping与MapStruct API，其余七个不包含；全部排除Lombok、processor和binding。公共库已按上述命令安装到本机Maven仓库。未验证IDE插件或新增业务映射。任务见[Issue #11](https://github.com/modakai/CloudProcure/issues/11)。2026-10-31复核：identity-service后来也接入common-mapping，现为两个服务包含，见[分组父工程验证](evidence/parent-bom.md)。
 
 ## 官方依据
 

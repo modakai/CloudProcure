@@ -6,7 +6,7 @@
 
 **当前已交付产品工程设计和可编译运行的八应用骨架，尚未实现采购业务与OIDC认证闭环。文中的容量、SLO、进度仍为设计目标或估算，不能当成实测结果或生产承诺。**
 
-快速开始：使用本机Maven3.9.9与JDK21，在根目录运行`mvn -B -ntp verify`，单独启动前先运行`mvn -B -ntp -pl common/common-webmvc -am install -DskipTests`安装公共库，再运行`mvn -pl gateway "-Dspring-boot.run.profiles=skeleton" spring-boot:run`；显式`skeleton`模式无需中间件，仅开放`http://127.0.0.1:8080/actuator/health`。不使用Maven Wrapper；当前默认`local`需要个人配置和真实依赖。测试源码按维护者要求仅保留本地，干净克隆的`verify`不代表已执行测试。完整命令见[骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md)，验证结果与依赖证据见[#2验证报告](docs/evidence/M0-issue-2/README.md)。
+快速开始：使用本机Maven3.9.9与JDK21，在根目录运行`mvn -B -ntp verify`，单独启动前先运行`mvn -B -ntp -pl common/common-bom,common/common-webmvc -am install -DskipTests`安装公共库与BOM，再运行`mvn -pl gateway "-Dspring-boot.run.profiles=skeleton" spring-boot:run`；显式`skeleton`模式无需中间件，仅开放`http://127.0.0.1:8080/actuator/health`。不使用Maven Wrapper；当前默认`local`需要个人配置和真实依赖。测试源码按维护者要求仅保留本地，干净克隆的`verify`不代表已执行测试。完整命令见[骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md)，验证结果与依赖证据见[#2验证报告](docs/evidence/M0-issue-2/README.md)。
 
 ## 先读这六条结论
 
@@ -40,6 +40,7 @@
 | [业务术语表](GLOSSARY.md) | 避免把采购申请、订单、支付意图和履约混为一谈 |
 | [一致性决策详解](docs/adr/0001-explicit-compensation.md) | 为什么主流程选择显式补偿，而非全链路分布式事务 |
 | [认证与持久化决策](docs/adr/0002-owned-oidc-and-jpa.md) | 自建OIDC与JPA的学习目标、范围和代价 |
+| [统一父工程与公共库BOM](docs/adr/0003-unified-parent-and-common-bom.md) | 为什么根聚合下再加分组父工程，公共库版本如何收敛 |
 
 ## 推荐阅读与实施顺序
 

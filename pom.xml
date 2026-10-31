@@ -18,18 +18,11 @@
     <name>CloudProcure</name>
     <description>企业采购与履约微服务实战</description>
 
+    <!-- 根工程只保留三个入口：公共库、业务服务与网关各自成组，组内模块由分组父工程聚合。 -->
     <modules>
-        <module>common/common-mapping</module>
-        <module>common/common-http</module>
-        <module>common/common-webmvc</module>
+        <module>common</module>
+        <module>services</module>
         <module>gateway</module>
-        <module>services/identity-service</module>
-        <module>services/access-service</module>
-        <module>services/catalog-service</module>
-        <module>services/trade-service</module>
-        <module>services/inventory-service</module>
-        <module>services/payment-service</module>
-        <module>services/fulfillment-service</module>
     </modules>
 
     <properties>

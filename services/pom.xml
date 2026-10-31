@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 业务服务分组父工程：统一导入公共库BOM并声明可执行JAR插件，公共库父工程不继承本POM。 -->
+    <parent>
+        <groupId>com.cloudprocure</groupId>
+        <artifactId>cloud-project</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>services</artifactId>
+    <packaging>pom</packaging>
+    <name>业务服务父工程</name>
+    <modules>
+        <module>identity-service</module>
+        <module>access-service</module>
+        <module>catalog-service</module>
+        <module>trade-service</module>
+        <module>inventory-service</module>
+        <module>payment-service</module>
+        <module>fulfillment-service</module>
+    </modules>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 七个服务由此获得公共库版本；BOM在同一reactor内解析，从根目录构建或-pl子集构建均可。 -->
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <build>
+        <plugins>
+            <!-- 可执行JAR只属于服务；此处声明一次，七个服务不再重复声明，父POM自身repackage会被Boot跳过。 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

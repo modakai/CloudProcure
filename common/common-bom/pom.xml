@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 公共库依赖契约：服务侧只导入本BOM，不各自抄写公共构件的${project.version}。 -->
+    <parent>
+        <groupId>com.cloudprocure</groupId>
+        <artifactId>common</artifactId>
+        <version>0.1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>common-bom</artifactId>
+    <packaging>pom</packaging>
+    <name>公共库依赖BOM</name>
+    <description>统一管理公共库构件版本；第三方版本仍由Spring Boot、Spring Cloud与SCA BOM决定。</description>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 只托管本项目产出的公共构件，避免成为Boot/Cloud之外的第二个第三方版本来源。 -->
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-http</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-mapping</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-webmvc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- common-redis仍是空实现，暂不进BOM，避免把未实现能力写进依赖契约。 -->
+        </dependencies>
+    </dependencyManagement>
+</project>

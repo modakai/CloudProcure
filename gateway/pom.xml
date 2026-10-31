@@ -11,12 +11,23 @@
     </parent>
     <artifactId>gateway</artifactId>
     <name>网关与BFF</name>
+    <dependencyManagement>
+        <dependencies>
+            <!-- 网关独立于services父工程，单独导入公共库BOM以保持版本单源。 -->
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-bom</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <!-- 公共HTTP基础设施按Web栈接入，不共享业务实体。 -->
         <dependency>
             <groupId>com.cloudprocure</groupId>
             <artifactId>common-http</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

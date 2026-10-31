@@ -5,9 +5,9 @@
     <!-- 仅声明本模块使用的能力，不向网关传递阻塞式JPA依赖。 -->
     <parent>
         <groupId>com.cloudprocure</groupId>
-        <artifactId>cloud-project</artifactId>
+        <artifactId>services</artifactId>
         <version>0.1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>access-service</artifactId>
     <name>企业组织与权限</name>
@@ -16,13 +16,11 @@
         <dependency>
             <groupId>com.cloudprocure</groupId>
             <artifactId>common-mapping</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <!-- 公共HTTP基础设施按Web栈接入，不共享业务实体。 -->
         <dependency>
             <groupId>com.cloudprocure</groupId>
             <artifactId>common-webmvc</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -75,12 +73,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
 </project>
