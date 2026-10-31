@@ -112,13 +112,47 @@ cp:catalog-service:cache:product-detail::12345
 - 前缀和缓存名都不包含租户。私有缓存键必须由调用方把租户和数据范围放进 `key`，不能只用 `orderId` 之类的资源 ID；否则企业 A 可能读到企业 B 的缓存。缓存不能替代鉴权。
 - `@CacheEvict(allEntries = true)` 通过模式扫描清理；缓存键空间很大时应避免依赖整缓存清理，改为精确失效或版本化前缀。
 
-## 6. RedisTemplate 与 StringRedisTemplate
+## 6. RedisTemplate、StringRedisTemplate 与 RedisUtil
 
 自动配置提供一个名为 `redisTemplate` 的 `RedisTemplate<String,Object>`：键为 UTF-8 字符串，值和 Hash 值为 JSON。应用自定义同名 Bean 时以应用为准。
 
 - 计数、限流、会话等需要原子字符串/数字操作的场景使用 Boot 的 `StringRedisTemplate`；不要用 JSON 值模板做 `INCR`。
 - `RedisTemplate` 是阻塞 API。Gateway 的 WebFlux 事件循环不要调用它；会话与响应式缓存使用各自的响应式设施。
-- 本模块不提供 `RedisService` 大包装；直接使用 Spring 的模板与 Cache 抽象，减少一层无行为的转发。
+- 自动配置还注册一个生命周期 Bean，把 `redisTemplate` 交给静态 `RedisUtil`，封装常用对象读写、键生命周期、Hash、Set 与 List 操作；它不是全量命令封装。
+
+### 6.1 RedisUtil 使用约定
+
+`RedisUtil` 提供静态泛型方法，直接按类名调用；模板由自动配置在容器启动时建立，应用不需要再注入 Bean：
+
+```java
+Item item = RedisUtil.get("cp:local:catalog:item:1");          // 泛型由赋值目标推断
+Item checked = RedisUtil.get("cp:local:catalog:item:1", Item.class);
+RedisUtil.set("cp:local:catalog:item:1", item, Duration.ofMinutes(5));
+Object value = RedisUtil.getKey("cp:local:catalog:item:1");    // get 的别名
+Map<String, Item> all = RedisUtil.hGetAll("cp:local:catalog:items", Item.class);
+List<Item> page = RedisUtil.lRange("cp:local:catalog:list", 0, 9);
+```
+
+静态模板的限制必须知道：
+
+- 同一 JVM 只能有一个活动 `RedisTemplate`。测试或同一 JVM 启动多个 Spring 上下文时，后启动的上下文覆盖引用；旧上下文关闭使用 compare-and-set，只清理自己设置的那一份，不会误清后来上下文。多上下文测试不要并发依赖静态门面。
+- 自动配置未生效（例如排除 `RedisAutoConfiguration`、没有连接工厂）时调用会抛 `IllegalStateException`，不会静默返回 null 或假装成功。
+- 泛型 `get(key)` 是 unchecked 转换：编译期按赋值目标推断，运行期仍由 JSON 反序列化决定实际类型；类型不确定时用 `get(key, Class)`，类型不匹配会抛 `ClassCastException`。
+
+| 类别 | 方法 |
+|---|---|
+| value | `get` / `getKey`（可选 `Class` 重载）/ `set`（可带 TTL）/ `setIfAbsent` |
+| key | `delete` / `hasKey` / `expire` / `getExpire`（-1 表示没有过期时间，-2 表示 key 不存在） |
+| hash | `hSet` / `hGet` / `hGetAll`（可选 `Class` 重载）/ `hHasKey` / `hDelete` |
+| set | `sAdd` / `sMembers` / `sRemove` / `sHasKey` |
+| list | `lPush` / `lRange` / `lTrim` |
+
+约束：
+
+- **键不自动加缓存前缀**：`RedisUtil` 操作原始键。调用方必须自行加入环境/服务/租户命名空间，不能依赖 `cloudprocure.redis.cache.key-prefix`，否则会与 Spring Cache 或其他服务冲突。
+- 值沿用本章的 JSON 白名单；第三方类型、序列化失败会直接抛出。无 TTL 的 `set` 会写永久键，业务数据应使用带 TTL 的重载。
+- 不提供 `INCR`/`DECR`、分布式锁、`KEYS`/`SCAN` 封装；这些需要 `StringRedisTemplate`、Lua 或独立的锁设计，不能用一个“万能工具类”假装安全。
+- Redis 故障不降级：异常直接抛给调用方，由业务决定是否可回源。
 
 ## 7. 故障语义
 

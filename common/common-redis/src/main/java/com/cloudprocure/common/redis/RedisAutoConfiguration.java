@@ -1,6 +1,7 @@
 package com.cloudprocure.common.redis;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -70,6 +71,35 @@ public class RedisAutoConfiguration {
         template.setHashKeySerializer(StringRedisSerializer.UTF_8);
         template.setHashValueSerializer(valueSerializer);
         return template;
+    }
+
+    /**
+     * 为静态 {@link RedisUtil} 建立模板引用，并在上下文关闭时清理。
+     *
+     * <p>静态方法没有实例可注入，只能通过这个生命周期 Bean 在启动时设置模板。
+     * 清理使用 compare-and-set，只清除本上下文设置的那一份；同一 JVM 后启动的上下文
+     * 覆盖引用时，旧上下文关闭不会把新引用清空。代价是同一 JVM 只能有一个活动模板，
+     * 多上下文测试必须避免并发使用静态门面。</p>
+     */
+    @Bean
+    RedisUtilLifecycle redisUtilLifecycle(
+            @Qualifier("redisTemplate") RedisTemplate<String, Object> redisTemplate) {
+        return new RedisUtilLifecycle(redisTemplate);
+    }
+
+    static final class RedisUtilLifecycle implements DisposableBean {
+
+        private final RedisTemplate<String, Object> redisTemplate;
+
+        RedisUtilLifecycle(RedisTemplate<String, Object> redisTemplate) {
+            this.redisTemplate = redisTemplate;
+            RedisUtil.init(redisTemplate);
+        }
+
+        @Override
+        public void destroy() {
+            RedisUtil.clear(redisTemplate);
+        }
     }
 
     @Bean

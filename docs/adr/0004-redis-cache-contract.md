@@ -31,3 +31,5 @@
 - 验证范围只覆盖单节点真实 Redis 与本机测试；Redis Cluster/Sentinel、跨服务共享、生产容量与故障转移未验证。
 
 重新评估触发条件：需要缓存第三方类型、需要 Protobuf/Kryo 级性能、引入多租户统一键策略、Redis Cluster 的键槽要求、或出现必须静默降级的业务场景。
+
+**2026-10-31 补充**：应维护者要求，自动配置增加静态 `RedisUtil` 泛型门面，覆盖常用对象读写、键生命周期、Hash、Set 与 List 操作，作为 Spring Cache/RedisTemplate 之上的便利层。它不改变上述序列化、命名空间与 TTL 契约，也不是全量命令封装：`INCR`/`DECR`、分布式锁与 `KEYS`/`SCAN` 仍直接使用 `StringRedisTemplate`、Lua 或独立设计。静态模板由自动配置的生命周期 Bean 注入，并在上下文关闭时 compare-and-set 清理；代价是同一 JVM 只能有一个活动模板，多上下文测试不能并发依赖静态门面。
