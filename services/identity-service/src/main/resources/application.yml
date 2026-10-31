@@ -1,32 +1,45 @@
-# 默认骨架模式可离线启动；不创建假账号、临时签名密钥或业务数据。
+# 说明：profile=skeleton 时可在无 MySQL/Nacos 的情况下离线启动；
+# 该 profile 不创建假账号、临时签名密钥或业务数据。
 spring:
   application:
     name: identity-service
   profiles:
+    # 没有显式指定 profile 时默认激活 local（连接本机 Nacos/MySQL，见 application-local.yml）。
+    # skeleton profile 需要显式 --spring.profiles.active=skeleton 才会启用。
     default: local
   autoconfigure:
     exclude:
+      # 不生成 Boot 默认内存用户：否则会打印随机密码，并且与数据库账号并存，容易误用。
       - org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
+      # 不启用 Boot 的授权服务器自动配置：本项目手写协议链/仓储/issuer（见 AuthorizationServerConfiguration），
+      # 自动配置会再建一条默认链，链顺序和依赖都不受控。
       - org.springframework.boot.security.oauth2.server.authorization.autoconfigure.servlet.OAuth2AuthorizationServerAutoConfiguration
   jpa:
+    # 不把 EntityManager 开到视图渲染阶段：避免隐式懒加载，也更容易暴露 N+1 查询。
     open-in-view: false
     hibernate:
+      # 表结构由 Flyway 管理（见 db/migration），Hibernate 只校验实体映射，绝不自动改表。
       ddl-auto: validate
 
 server:
   # 当前直连认证服务，不让未受信任的转发头改写限速使用的来源地址。
   forward-headers-strategy: none
+  # 默认只绑定环回地址，避免本机开发时意外暴露到局域网；部署时必须显式覆盖。
   address: ${SERVER_ADDRESS:127.0.0.1}
   port: ${SERVER_PORT:9000}
+  # 优雅停机：给正在处理的协议请求留出完成时间，避免换 Token 中途被切断。
   shutdown: graceful
 
 management:
   endpoints:
     web:
       exposure:
+        # 只暴露健康端点；env/beans/heapdump 等默认不对外开放。
         include: health
   endpoint:
     health:
+      # 不对匿名调用方泄露数据库、磁盘等组件细节。
       show-details: never
       probes:
+        # 开放 liveness/readiness 探针，供容器编排判断何时可以接流量。
         enabled: true

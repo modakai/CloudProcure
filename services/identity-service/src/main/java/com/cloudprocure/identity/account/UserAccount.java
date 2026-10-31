@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.UuidGenerator;
 
 @Entity // 标记这是一个JPA实体，将映射到数据库表
 @Table(name = "user_account") // 指定表名，若不写则默认使用类名
@@ -13,7 +14,7 @@ import lombok.ToString;
 public class UserAccount {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     private String subjectId;
 
     /**
