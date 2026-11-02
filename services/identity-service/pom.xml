@@ -22,6 +22,16 @@
             <groupId>com.cloudprocure</groupId>
             <artifactId>common-mapping</artifactId>
         </dependency>
+        <!-- 登录限速改用 Redis 共享计数：程序化 API 不依赖 AOP，适配 Security Filter 链。 -->
+        <dependency>
+            <groupId>com.cloudprocure</groupId>
+            <artifactId>common-rate-limit</artifactId>
+        </dependency>
+        <!-- 显式声明 Redis 客户端，连接参数仍由 spring.data.redis.* 管理；未配置时启动失败。 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>

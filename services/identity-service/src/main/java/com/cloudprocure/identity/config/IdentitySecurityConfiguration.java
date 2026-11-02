@@ -1,5 +1,6 @@
 package com.cloudprocure.identity.config;
 
+import com.cloudprocure.common.ratelimit.RateLimiter;
 import com.cloudprocure.common.webmvc.ProblemSecurityHandlers;
 import com.cloudprocure.identity.account.AccountAuthenticationProvider;
 import com.cloudprocure.identity.account.LoginAttemptFilter;
@@ -45,18 +46,22 @@ public class IdentitySecurityConfiguration {
     /**
      * 登录限速器：不是安全框架组件，但被安全链上的过滤器使用。
      *
+     * <p>计数由 common-rate-limit 的程序化 {@link RateLimiter} 放到 Redis：多实例共享、
+     * 重启不丢未过期额度。这里只保留 identity 的规则（账号/来源额度与窗口），不再有
+     * 本地 Map、时钟或 max-entries；Redis 不可用时由过滤器映射为 503。</p>
+     *
      * <p>这里把外部配置绑定成 Duration：Boot 会把 ISO-8601 的 PT5M 转成 Duration，
-     * 依赖 ConversionService（测试夹具里因此专门补了 ApplicationConversionService）。
-     * 各参数含义见 {@link LoginAttemptLimiter}：账号维度、来源维度、各自窗口、最大键数。
+     * 依赖 ConversionService（测试夹具里因此专门补了 ApplicationConversionService）。</p>
      */
     @Bean
     LoginAttemptLimiter loginAttemptLimiter(
+            RateLimiter rateLimiter,
             @Value("${identity.login-rate-limit.account-attempts:5}") int accountAttempts,
             @Value("${identity.login-rate-limit.account-window:PT5M}") Duration accountWindow,
             @Value("${identity.login-rate-limit.source-attempts:30}") int sourceAttempts,
-            @Value("${identity.login-rate-limit.source-window:PT1M}") Duration sourceWindow,
-            @Value("${identity.login-rate-limit.max-entries:10000}") int maxEntries) {
-        return new LoginAttemptLimiter(accountAttempts, accountWindow, sourceAttempts, sourceWindow, maxEntries);
+            @Value("${identity.login-rate-limit.source-window:PT1M}") Duration sourceWindow) {
+        return new LoginAttemptLimiter(rateLimiter, accountAttempts, accountWindow,
+                sourceAttempts, sourceWindow);
     }
 
     /**

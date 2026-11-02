@@ -16,6 +16,14 @@ spring:
         password: ${NACOS_PASSWORD}
     sentinel:
       enabled: false
+  data:
+    redis:
+      # 登录限速的共享计数存储；REDIS_PASSWORD 由进程环境或 Secret 注入。
+      host: ${REDIS_HOST:127.0.0.1}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD}
+      # 阻塞调用必须有界，Redis 故障时 fail-closed 返回 503。
+      timeout: 2s
   datasource:
     url: ${IDENTITY_DB_URL}
     username: ${IDENTITY_DB_USERNAME}
@@ -25,12 +33,17 @@ spring:
     locations: classpath:db/migration
     clean-disabled: true
 
-# 单实例登录尝试额度；与成功/失败无关，变更后重启 identity 生效。
+cloudprocure:
+  rate-limit:
+    # 环境段用于隔离不同环境；应用段默认取 spring.application.name。
+    environment: local
+    default-algorithm: FIXED_WINDOW
+    log-decisions: true
+
+# 登录尝试额度由 Redis 原子计数共享；与成功/失败无关，变更后全实例需使用同一规则。
 identity:
   login-rate-limit:
     account-attempts: 5
     account-window: PT5M
     source-attempts: 30
     source-window: PT1M
-    # 每个维度的最大键数；容量耗尽时拒绝新键，避免主动淘汰导致绕过限速。
-    max-entries: 10000

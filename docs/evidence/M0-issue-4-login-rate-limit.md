@@ -1,6 +1,8 @@
 # Issue #4：账号与请求来源登录限速
 
-日期：2026-10-24（Asia/Shanghai）。范围：当前单实例 identity 的表单密码登录。
+> **已被 Issue #12 阶段 2 取代（2026-11-02）**：本文记录当时基于进程内 Map 的单实例实现，仅作为历史证据保留。当前 identity 使用 `common-rate-limit` + Redis 共享计数，见[identity登录限速迁移](../19-identity登录限速迁移.md)。本文中的 `max-entries` 配置已删除。
+
+日期：2026-10-24（Asia/Shanghai）。范围：当时单实例 identity 的表单密码登录。
 
 ## 已实现行为
 
