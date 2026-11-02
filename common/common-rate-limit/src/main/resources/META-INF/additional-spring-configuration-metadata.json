@@ -1,0 +1,67 @@
+{
+  "properties": [
+    {
+      "name": "cloudprocure.rate-limit.enabled",
+      "description": "是否启用通用限流自动配置；关闭后不会创建 RateLimiter/AOP，适合确实不需要限流的应用。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.key-prefix",
+      "description": "完整 Redis 键前缀；配置后覆盖 environment/application 拼接。必须以冒号结尾，不能含空白、控制字符或通配符。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.environment",
+      "description": "Redis 键中的环境段；未配置时取第一个 active profile，仍没有则使用 default 并告警。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.application",
+      "description": "Redis 键中的应用段；未配置时读取 spring.application.name。两者都缺失时启动失败。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.default-limit",
+      "description": "注解或程序化调用未指定 limit 时使用的默认额度。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.default-window",
+      "description": "注解或程序化调用未指定 window 时使用的默认窗口，至少 1ms。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.default-algorithm",
+      "description": "未指定算法时使用的默认算法；不能配置为 DEFAULT。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.max-limit",
+      "description": "单次调用允许的最大额度；用于限制滑动窗口 ZSET 内存和异常配置。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.max-window",
+      "description": "单次调用允许的最大窗口；超过该值的 TTL 配置会被拒绝。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.max-key-length",
+      "description": "完整 Redis 限流键的最大长度；超长键在写入前失败。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.max-identifier-length",
+      "description": "摘要前原始标识的最大长度；用于限制超长用户名/来源的内存与哈希成本。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.log-decisions",
+      "description": "是否在控制台记录每次允许/拒绝决策；Redis 故障日志始终输出。生产高流量环境建议关闭。"
+    },
+    {
+      "name": "cloudprocure.rate-limit.aop-order",
+      "description": "@RateLimit 切面的 Ordered 顺序；默认高于事务拦截器，使超限请求在数据库之前被拒绝。"
+    }
+  ],
+  "hints": [
+    {
+      "name": "cloudprocure.rate-limit.default-algorithm",
+      "values": [
+        { "value": "FIXED_WINDOW", "description": "固定窗口：实现简单，边界可能双倍突发。" },
+        { "value": "SLIDING_WINDOW", "description": "滑动窗口：精确滚动统计，ZSET 内存随额度增长。" },
+        { "value": "TOKEN_BUCKET", "description": "令牌桶：允许容量内突发，按窗口周期补满。" },
+        { "value": "LEAKY_BUCKET", "description": "漏桶：按窗口周期泄漏队列占用量，满桶拒绝。" }
+      ]
+    }
+  ]
+}

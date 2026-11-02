@@ -18,5 +18,6 @@
         <module>common-mapping</module>
         <module>common-webmvc</module>
         <module>common-redis</module>
+        <module>common-rate-limit</module>
     </modules>
 </project>

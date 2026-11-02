@@ -37,6 +37,12 @@
                 <artifactId>common-redis</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <!-- 限流属于独立公共能力：不强迫只需要限流的服务引入缓存序列化与缓存管理。 -->
+            <dependency>
+                <groupId>com.cloudprocure</groupId>
+                <artifactId>common-rate-limit</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

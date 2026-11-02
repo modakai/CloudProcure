@@ -37,6 +37,7 @@
 | [14 骨架搭建与启动指南](docs/14-骨架搭建与启动指南.md) | Maven构建、端口与 local 真实依赖启动；skeleton 模式已移除 |
 | [16 Lombok与MapStruct](docs/16-Lombok与MapStruct.md) | 按需引用的映射公共模块、注解处理与生成代码边界 |
 | [17 Redis公共模块](docs/17-Redis公共模块.md) | JSON序列化、缓存键前缀、TTL与不缓存null的接入约定 |
+| [18 限流公共模块](docs/18-限流公共模块.md) | `@RateLimit`、程序化API、四种Redis原子限流算法与fail-closed约定 |
 | [M0骨架验证记录（已废止）](docs/evidence/M0-skeleton.md) | skeleton 模式的历史构建、HTTP测试、JAR与Compose检查；该模式已从仓库移除 |
 | [业务术语表](GLOSSARY.md) | 避免把采购申请、订单、支付意图和履约混为一谈 |
 | [一致性决策详解](docs/adr/0001-explicit-compensation.md) | 为什么主流程选择显式补偿，而非全链路分布式事务 |
